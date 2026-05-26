@@ -1,0 +1,55 @@
+package com.barberia.servicios.controller;
+
+import com.barberia.servicios.model.Servicio;
+import com.barberia.servicios.service.ServicioService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/servicios")
+public class ServicioController {
+
+    private final ServicioService servicioService;
+
+    public ServicioController(ServicioService servicioService) {
+        this.servicioService = servicioService;
+    }
+
+    @GetMapping
+    public List<Servicio> listarServicios() {
+        return servicioService.listarServicios();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Servicio> buscarPorId(@PathVariable Long id) {
+        return servicioService.buscarPorId(id);
+    }
+
+    @GetMapping("/disponible/{disponible}")
+    public List<Servicio> buscarPorDisponible(@PathVariable Boolean disponible) {
+        return servicioService.buscarPorDisponible(disponible);
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public List<Servicio> buscarPorNombre(@PathVariable String nombre) {
+        return servicioService.buscarPorNombre(nombre);
+    }
+
+    @PostMapping
+    public Servicio guardarServicio(@RequestBody Servicio servicio) {
+        return servicioService.guardarServicio(servicio);
+    }
+
+    @PutMapping("/{id}")
+    public Servicio modificarServicio(@PathVariable Long id, @RequestBody Servicio servicio) {
+        return servicioService.modificarServicio(id, servicio);
+    }
+
+    @DeleteMapping("/{id}")
+    public String eliminarServicio(@PathVariable Long id) {
+        servicioService.eliminarServicio(id);
+        return "Servicio eliminado correctamente";
+    }
+}
