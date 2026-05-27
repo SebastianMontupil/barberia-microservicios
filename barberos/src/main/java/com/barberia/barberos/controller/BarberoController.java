@@ -3,6 +3,7 @@ package com.barberia.barberos.controller;
 import com.barberia.barberos.dto.BarberoRequestDTO;
 import com.barberia.barberos.dto.BarberoResponseDTO;
 import com.barberia.barberos.service.BarberoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,14 +45,14 @@ public class BarberoController {
     }
 
     @PostMapping
-    public BarberoResponseDTO guardarBarbero(@RequestBody BarberoRequestDTO dto) {
+    public BarberoResponseDTO guardarBarbero(@Valid @RequestBody BarberoRequestDTO dto) {
         return barberoService.guardarBarbero(dto);
     }
 
     @PutMapping("/{id}")
     public BarberoResponseDTO modificarBarbero(
             @PathVariable Long id,
-            @RequestBody BarberoRequestDTO dto
+            @Valid @RequestBody BarberoRequestDTO dto
     ) {
         return barberoService.modificarBarbero(id, dto);
     }

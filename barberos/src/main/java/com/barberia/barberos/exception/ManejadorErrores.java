@@ -2,6 +2,7 @@ package com.barberia.barberos.exception;
 
 import com.barberia.barberos.dto.ErrorDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,23 @@ public class ManejadorErrores {
                 400,
                 "Error en la solicitud",
                 ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO manejarValidaciones(MethodArgumentNotValidException ex) {
+
+        String mensaje = ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+
+        return new ErrorDTO(
+                LocalDateTime.now(),
+                400,
+                "Error de validación",
+                mensaje
         );
     }
 }
