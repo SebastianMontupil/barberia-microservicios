@@ -6,6 +6,7 @@ import com.barberia.auth.dto.RecuperarPasswordDTO;
 import com.barberia.auth.dto.UsuarioRequestDTO;
 import com.barberia.auth.dto.UsuarioResponseDTO;
 import com.barberia.auth.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,17 +43,17 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public UsuarioResponseDTO registrarUsuario(@RequestBody UsuarioRequestDTO dto) {
+    public UsuarioResponseDTO registrarUsuario(@Valid @RequestBody UsuarioRequestDTO dto) {
         return usuarioService.registrarUsuario(dto);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginRequestDTO dto) {
+    public LoginResponseDTO login(@Valid @RequestBody LoginRequestDTO dto) {
         return usuarioService.login(dto);
     }
 
     @PutMapping("/recuperar-password")
-    public String recuperarPassword(@RequestBody RecuperarPasswordDTO dto) {
+    public String recuperarPassword(@Valid @RequestBody RecuperarPasswordDTO dto) {
         return usuarioService.recuperarPassword(dto);
     }
 
