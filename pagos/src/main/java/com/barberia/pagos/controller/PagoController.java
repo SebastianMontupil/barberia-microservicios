@@ -1,5 +1,6 @@
 package com.barberia.pagos.controller;
 
+import jakarta.validation.Valid;
 import com.barberia.pagos.dto.PagoRequestDTO;
 import com.barberia.pagos.dto.PagoResponseDTO;
 import com.barberia.pagos.service.PagoService;
@@ -49,7 +50,7 @@ public class PagoController {
     }
 
     @PostMapping
-    public PagoResponseDTO guardarPago(@RequestBody PagoRequestDTO dto) {
+    public PagoResponseDTO guardarPago(@Valid @RequestBody PagoRequestDTO dto) {
         return pagoService.guardarPago(dto);
     }
 
