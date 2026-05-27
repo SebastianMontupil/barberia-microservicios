@@ -2,6 +2,7 @@ package com.barberia.servicios.controller;
 
 import com.barberia.servicios.model.Servicio;
 import com.barberia.servicios.service.ServicioService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,12 +39,15 @@ public class ServicioController {
     }
 
     @PostMapping
-    public Servicio guardarServicio(@RequestBody Servicio servicio) {
+    public Servicio guardarServicio(@Valid @RequestBody Servicio servicio) {
         return servicioService.guardarServicio(servicio);
     }
 
     @PutMapping("/{id}")
-    public Servicio modificarServicio(@PathVariable Long id, @RequestBody Servicio servicio) {
+    public Servicio modificarServicio(
+            @PathVariable Long id,
+            @Valid @RequestBody Servicio servicio
+    ) {
         return servicioService.modificarServicio(id, servicio);
     }
 
