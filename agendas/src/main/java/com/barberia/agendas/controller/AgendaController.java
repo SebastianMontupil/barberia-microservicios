@@ -3,6 +3,7 @@ package com.barberia.agendas.controller;
 import com.barberia.agendas.dto.AgendaRequestDTO;
 import com.barberia.agendas.dto.AgendaResponseDTO;
 import com.barberia.agendas.service.AgendaService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class AgendaController {
     }
 
     @PostMapping
-    public AgendaResponseDTO guardarAgenda(@RequestBody AgendaRequestDTO dto) {
+    public AgendaResponseDTO guardarAgenda(@Valid @RequestBody AgendaRequestDTO dto) {
         return agendaService.guardarAgenda(dto);
     }
 
@@ -54,7 +55,10 @@ public class AgendaController {
     }
 
     @PutMapping("/reprogramar/{id}")
-    public AgendaResponseDTO reprogramarAgenda(@PathVariable Long id, @RequestBody AgendaRequestDTO dto) {
+    public AgendaResponseDTO reprogramarAgenda(
+            @PathVariable Long id,
+            @Valid @RequestBody AgendaRequestDTO dto
+    ) {
         return agendaService.reprogramarAgenda(id, dto);
     }
 
