@@ -2,6 +2,7 @@ package com.barberia.inventario.controller;
 
 import com.barberia.inventario.model.Producto;
 import com.barberia.inventario.service.ProductoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,12 +49,15 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Producto guardarProducto(@RequestBody Producto producto) {
+    public Producto guardarProducto(@Valid @RequestBody Producto producto) {
         return productoService.guardarProducto(producto);
     }
 
     @PutMapping("/{id}")
-    public Producto modificarProducto(@PathVariable Long id, @RequestBody Producto producto) {
+    public Producto modificarProducto(
+            @PathVariable Long id,
+            @Valid @RequestBody Producto producto
+    ) {
         return productoService.modificarProducto(id, producto);
     }
 
