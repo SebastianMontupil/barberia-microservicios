@@ -4,10 +4,10 @@ import jakarta.validation.Valid;
 import com.barberia.pagos.dto.PagoRequestDTO;
 import com.barberia.pagos.dto.PagoResponseDTO;
 import com.barberia.pagos.service.PagoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/pagos")
@@ -25,8 +25,10 @@ public class PagoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<PagoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return pagoService.buscarPorId(id);
+    public ResponseEntity<PagoResponseDTO> buscarPorId(@PathVariable Long id) {
+        return pagoService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/cliente/{clienteId}")

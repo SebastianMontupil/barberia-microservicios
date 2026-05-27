@@ -51,6 +51,10 @@ public class ServicioService {
     }
 
     public void eliminarServicio(Long id) {
+        if (!servicioRepository.existsById(id)) {
+            throw new RuntimeException("Servicio no encontrado");
+        }
+
         servicioRepository.deleteById(id);
     }
 }

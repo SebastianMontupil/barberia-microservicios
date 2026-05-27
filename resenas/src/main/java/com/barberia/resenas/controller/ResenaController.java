@@ -3,10 +3,11 @@ package com.barberia.resenas.controller;
 import com.barberia.resenas.dto.ResenaRequestDTO;
 import com.barberia.resenas.dto.ResenaResponseDTO;
 import com.barberia.resenas.service.ResenaService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/resenas")
@@ -24,8 +25,10 @@ public class ResenaController {
     }
 
     @GetMapping("/{id}")
-    public Optional<ResenaResponseDTO> buscarPorId(@PathVariable Long id) {
-        return resenaService.buscarPorId(id);
+    public ResponseEntity<ResenaResponseDTO> buscarPorId(@PathVariable Long id) {
+        return resenaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/cliente/{clienteId}")
@@ -44,14 +47,14 @@ public class ResenaController {
     }
 
     @PostMapping
-    public ResenaResponseDTO guardarResena(@RequestBody ResenaRequestDTO dto) {
+    public ResenaResponseDTO guardarResena(@Valid @RequestBody ResenaRequestDTO dto) {
         return resenaService.guardarResena(dto);
     }
 
     @PutMapping("/{id}")
     public ResenaResponseDTO modificarResena(
             @PathVariable Long id,
-            @RequestBody ResenaRequestDTO dto
+            @Valid @RequestBody ResenaRequestDTO dto
     ) {
         return resenaService.modificarResena(id, dto);
     }

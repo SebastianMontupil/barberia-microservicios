@@ -4,10 +4,10 @@ import com.barberia.barberos.dto.BarberoRequestDTO;
 import com.barberia.barberos.dto.BarberoResponseDTO;
 import com.barberia.barberos.service.BarberoService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/barberos")
@@ -25,13 +25,17 @@ public class BarberoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<BarberoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return barberoService.buscarPorId(id);
+    public ResponseEntity<BarberoResponseDTO> buscarPorId(@PathVariable Long id) {
+        return barberoService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public Optional<BarberoResponseDTO> buscarPorUsuarioId(@PathVariable Long usuarioId) {
-        return barberoService.buscarPorUsuarioId(usuarioId);
+    public ResponseEntity<BarberoResponseDTO> buscarPorUsuarioId(@PathVariable Long usuarioId) {
+        return barberoService.buscarPorUsuarioId(usuarioId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/disponible/{disponible}")

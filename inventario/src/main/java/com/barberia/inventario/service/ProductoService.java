@@ -57,6 +57,10 @@ public class ProductoService {
 
     public Producto aumentarStock(Long id, Integer cantidad) {
 
+        if (cantidad == null || cantidad <= 0) {
+            throw new RuntimeException("La cantidad debe ser mayor a 0");
+        }
+
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
@@ -66,6 +70,10 @@ public class ProductoService {
     }
 
     public Producto disminuirStock(Long id, Integer cantidad) {
+
+        if (cantidad == null || cantidad <= 0) {
+            throw new RuntimeException("La cantidad debe ser mayor a 0");
+        }
 
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
@@ -91,6 +99,10 @@ public class ProductoService {
     }
 
     public void eliminarProducto(Long id) {
+        if (!productoRepository.existsById(id)) {
+            throw new RuntimeException("Producto no encontrado");
+        }
+
         productoRepository.deleteById(id);
     }
 }

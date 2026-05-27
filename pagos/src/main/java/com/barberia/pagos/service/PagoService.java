@@ -104,6 +104,10 @@ public class PagoService {
     }
 
     public void eliminarPago(Long id) {
+        if (!pagoRepository.existsById(id)) {
+            throw new RuntimeException("Pago no encontrado");
+        }
+
         pagoRepository.deleteById(id);
     }
 

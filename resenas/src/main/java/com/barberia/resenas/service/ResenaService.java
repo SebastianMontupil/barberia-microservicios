@@ -60,10 +60,6 @@ public class ResenaService {
 
     public ResenaResponseDTO guardarResena(ResenaRequestDTO dto) {
 
-        if (dto.getCalificacion() < 1 || dto.getCalificacion() > 5) {
-            throw new RuntimeException("La calificación debe estar entre 1 y 5");
-        }
-
         Resena resena = new Resena();
 
         resena.setClienteId(dto.getClienteId());
@@ -79,10 +75,6 @@ public class ResenaService {
 
     public ResenaResponseDTO modificarResena(Long id, ResenaRequestDTO dto) {
 
-        if (dto.getCalificacion() < 1 || dto.getCalificacion() > 5) {
-            throw new RuntimeException("La calificación debe estar entre 1 y 5");
-        }
-
         Resena resena = resenaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reseña no encontrada"));
 
@@ -97,6 +89,10 @@ public class ResenaService {
     }
 
     public void eliminarResena(Long id) {
+        if (!resenaRepository.existsById(id)) {
+            throw new RuntimeException("Reseña no encontrada");
+        }
+
         resenaRepository.deleteById(id);
     }
 

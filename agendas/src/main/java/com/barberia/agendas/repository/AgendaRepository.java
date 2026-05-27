@@ -16,5 +16,18 @@ public interface AgendaRepository extends JpaRepository<Agenda, Long> {
 
     List<Agenda> findByEstado(String estado);
 
-    boolean existsByBarberoIdAndFechaAndHora(Long barberoId, LocalDate fecha, java.time.LocalTime hora);
+    boolean existsByBarberoIdAndFechaAndHoraAndEstadoNot(
+            Long barberoId,
+            LocalDate fecha,
+            java.time.LocalTime hora,
+            String estado
+    );
+
+    boolean existsByBarberoIdAndFechaAndHoraAndEstadoNotAndIdNot(
+            Long barberoId,
+            LocalDate fecha,
+            java.time.LocalTime hora,
+            String estado,
+            Long id
+    );
 }

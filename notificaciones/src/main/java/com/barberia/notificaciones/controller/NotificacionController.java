@@ -4,10 +4,10 @@ import com.barberia.notificaciones.dto.NotificacionRequestDTO;
 import com.barberia.notificaciones.dto.NotificacionResponseDTO;
 import com.barberia.notificaciones.service.NotificacionService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/notificaciones")
@@ -25,8 +25,10 @@ public class NotificacionController {
     }
 
     @GetMapping("/{id}")
-    public Optional<NotificacionResponseDTO> buscarPorId(@PathVariable Long id) {
-        return notificacionService.buscarPorId(id);
+    public ResponseEntity<NotificacionResponseDTO> buscarPorId(@PathVariable Long id) {
+        return notificacionService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/usuario/{usuarioId}")

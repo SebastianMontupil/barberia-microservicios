@@ -86,25 +86,35 @@ public class BarberoService {
     }
 
     public void eliminarBarbero(Long id) {
+        if (!barberoRepository.existsById(id)) {
+            throw new RuntimeException("Barbero no encontrado");
+        }
+
         barberoRepository.deleteById(id);
     }
 
     private BarberoResponseDTO convertirAResponseDTO(Barbero barbero) {
-
-        UsuarioDTO usuario = restTemplate.getForObject(
-                "http://localhost:8081/api/usuarios/" + barbero.getUsuarioId(),
-                UsuarioDTO.class
-        );
 
         BarberoResponseDTO dto = new BarberoResponseDTO();
 
         dto.setId(barbero.getId());
         dto.setUsuarioId(barbero.getUsuarioId());
 
-        if (usuario != null) {
-            dto.setNombre(usuario.getNombre());
-            dto.setEmail(usuario.getEmail());
-            dto.setTelefono(usuario.getTelefono());
+        try {
+            UsuarioDTO usuario = restTemplate.getForObject(
+                    "http://localhost:8081/api/usuarios/" + barbero.getUsuarioId(),
+                    UsuarioDTO.class
+            );
+
+            if (usuario != null) {
+                dto.setNombre(usuario.getNombre());
+                dto.setEmail(usuario.getEmail());
+                dto.setTelefono(usuario.getTelefono());
+            }
+        } catch (Exception e) {
+            dto.setNombre("Usuario no encontrado");
+            dto.setEmail("Sin informacion");
+            dto.setTelefono("Sin informacion");
         }
 
         dto.setEspecialidad(barbero.getEspecialidad());

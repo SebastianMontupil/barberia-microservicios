@@ -15,9 +15,35 @@ public class Notificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "usuario_id")
     private Long usuarioId;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(
+            name = "usuario_id",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private UsuarioReferencia usuario;
+
+    @Column(name = "agenda_id")
     private Long agendaId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(
+            name = "agenda_id",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private AgendaReferencia agenda;
 
     private String tipo;
     // CORREO, SMS, WHATSAPP

@@ -3,10 +3,10 @@ package com.barberia.servicios.controller;
 import com.barberia.servicios.model.Servicio;
 import com.barberia.servicios.service.ServicioService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/servicios")
@@ -24,8 +24,10 @@ public class ServicioController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Servicio> buscarPorId(@PathVariable Long id) {
-        return servicioService.buscarPorId(id);
+    public ResponseEntity<Servicio> buscarPorId(@PathVariable Long id) {
+        return servicioService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/disponible/{disponible}")

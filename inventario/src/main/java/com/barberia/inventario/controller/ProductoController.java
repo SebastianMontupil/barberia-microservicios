@@ -3,10 +3,10 @@ package com.barberia.inventario.controller;
 import com.barberia.inventario.model.Producto;
 import com.barberia.inventario.service.ProductoService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -24,8 +24,10 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Producto> buscarPorId(@PathVariable Long id) {
-        return productoService.buscarPorId(id);
+    public ResponseEntity<Producto> buscarPorId(@PathVariable Long id) {
+        return productoService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/categoria/{categoria}")

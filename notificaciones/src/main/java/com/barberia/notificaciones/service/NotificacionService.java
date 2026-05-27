@@ -114,6 +114,10 @@ public class NotificacionService {
     }
 
     public void eliminarNotificacion(Long id) {
+        if (!notificacionRepository.existsById(id)) {
+            throw new RuntimeException("Notificación no encontrada");
+        }
+
         notificacionRepository.deleteById(id);
     }
 

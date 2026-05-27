@@ -4,10 +4,10 @@ import com.barberia.agendas.dto.AgendaRequestDTO;
 import com.barberia.agendas.dto.AgendaResponseDTO;
 import com.barberia.agendas.service.AgendaService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/agendas")
@@ -25,8 +25,10 @@ public class AgendaController {
     }
 
     @GetMapping("/{id}")
-    public Optional<AgendaResponseDTO> buscarPorId(@PathVariable Long id) {
-        return agendaService.buscarPorId(id);
+    public ResponseEntity<AgendaResponseDTO> buscarPorId(@PathVariable Long id) {
+        return agendaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/cliente/{clienteId}")

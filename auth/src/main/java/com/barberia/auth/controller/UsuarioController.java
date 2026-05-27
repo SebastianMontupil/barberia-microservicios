@@ -7,10 +7,10 @@ import com.barberia.auth.dto.UsuarioRequestDTO;
 import com.barberia.auth.dto.UsuarioResponseDTO;
 import com.barberia.auth.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -28,13 +28,17 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public Optional<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
-        return usuarioService.buscarPorId(id);
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
+        return usuarioService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/email/{email}")
-    public Optional<UsuarioResponseDTO> buscarPorEmail(@PathVariable String email) {
-        return usuarioService.buscarPorEmail(email);
+    public ResponseEntity<UsuarioResponseDTO> buscarPorEmail(@PathVariable String email) {
+        return usuarioService.buscarPorEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/rol/{rol}")

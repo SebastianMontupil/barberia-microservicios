@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReporteService {
@@ -18,16 +20,15 @@ public class ReporteService {
 
     public ReporteDTO reporteIngresos() {
 
-        PagoDTO[] pagosArray = restTemplate.getForObject(
-                "http://localhost:8085/api/pagos",
-                PagoDTO[].class
+        List<PagoDTO> pagos = obtenerListaPagos(
+                "http://localhost:8085/api/pagos"
         );
-
-        List<PagoDTO> pagos = Arrays.asList(pagosArray);
 
         int totalIngresos = pagos.stream()
                 .filter(pago -> "PAGADO".equalsIgnoreCase(pago.getEstadoPago()))
-                .mapToInt(PagoDTO::getMonto)
+                .map(PagoDTO::getMonto)
+                .filter(Objects::nonNull)
+                .mapToInt(Integer::intValue)
                 .sum();
 
         return new ReporteDTO(
@@ -41,12 +42,9 @@ public class ReporteService {
 
     public ReporteDTO reporteCitas() {
 
-        AgendaDTO[] agendasArray = restTemplate.getForObject(
-                "http://localhost:8083/api/agendas",
-                AgendaDTO[].class
+        List<AgendaDTO> agendas = obtenerListaAgendas(
+                "http://localhost:8083/api/agendas"
         );
-
-        List<AgendaDTO> agendas = Arrays.asList(agendasArray);
 
         return new ReporteDTO(
                 "Reporte de citas",
@@ -59,12 +57,9 @@ public class ReporteService {
 
     public ReporteDTO reporteCitasPorBarbero(Long barberoId) {
 
-        AgendaDTO[] agendasArray = restTemplate.getForObject(
-                "http://localhost:8083/api/agendas/barbero/" + barberoId,
-                AgendaDTO[].class
+        List<AgendaDTO> agendas = obtenerListaAgendas(
+                "http://localhost:8083/api/agendas/barbero/" + barberoId
         );
-
-        List<AgendaDTO> agendas = Arrays.asList(agendasArray);
 
         return new ReporteDTO(
                 "Reporte de citas por barbero",
@@ -77,15 +72,14 @@ public class ReporteService {
 
     public ReporteDTO reporteCalificacionBarbero(Long barberoId) {
 
-        ResenaDTO[] resenasArray = restTemplate.getForObject(
-                "http://localhost:8087/api/resenas/barbero/" + barberoId,
-                ResenaDTO[].class
+        List<ResenaDTO> resenas = obtenerListaResenas(
+                "http://localhost:8087/api/resenas/barbero/" + barberoId
         );
 
-        List<ResenaDTO> resenas = Arrays.asList(resenasArray);
-
         double promedio = resenas.stream()
-                .mapToInt(ResenaDTO::getCalificacion)
+                .map(ResenaDTO::getCalificacion)
+                .filter(Objects::nonNull)
+                .mapToInt(Integer::intValue)
                 .average()
                 .orElse(0.0);
 
@@ -100,21 +94,18 @@ public class ReporteService {
 
     public ReporteDTO reporteDesempenoBarbero(Long barberoId) {
 
-        AgendaDTO[] agendasArray = restTemplate.getForObject(
-                "http://localhost:8083/api/agendas/barbero/" + barberoId,
-                AgendaDTO[].class
+        List<AgendaDTO> agendas = obtenerListaAgendas(
+                "http://localhost:8083/api/agendas/barbero/" + barberoId
         );
 
-        ResenaDTO[] resenasArray = restTemplate.getForObject(
-                "http://localhost:8087/api/resenas/barbero/" + barberoId,
-                ResenaDTO[].class
+        List<ResenaDTO> resenas = obtenerListaResenas(
+                "http://localhost:8087/api/resenas/barbero/" + barberoId
         );
-
-        List<AgendaDTO> agendas = Arrays.asList(agendasArray);
-        List<ResenaDTO> resenas = Arrays.asList(resenasArray);
 
         double promedio = resenas.stream()
-                .mapToInt(ResenaDTO::getCalificacion)
+                .map(ResenaDTO::getCalificacion)
+                .filter(Objects::nonNull)
+                .mapToInt(Integer::intValue)
                 .average()
                 .orElse(0.0);
 
@@ -125,5 +116,32 @@ public class ReporteService {
                 null,
                 promedio
         );
+    }
+
+    private List<PagoDTO> obtenerListaPagos(String url) {
+        try {
+            PagoDTO[] respuesta = restTemplate.getForObject(url, PagoDTO[].class);
+            return respuesta == null ? Collections.emptyList() : Arrays.asList(respuesta);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    private List<AgendaDTO> obtenerListaAgendas(String url) {
+        try {
+            AgendaDTO[] respuesta = restTemplate.getForObject(url, AgendaDTO[].class);
+            return respuesta == null ? Collections.emptyList() : Arrays.asList(respuesta);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    private List<ResenaDTO> obtenerListaResenas(String url) {
+        try {
+            ResenaDTO[] respuesta = restTemplate.getForObject(url, ResenaDTO[].class);
+            return respuesta == null ? Collections.emptyList() : Arrays.asList(respuesta);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 }

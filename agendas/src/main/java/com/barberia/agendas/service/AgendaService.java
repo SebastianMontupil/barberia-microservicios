@@ -59,10 +59,11 @@ public class AgendaService {
 
     public AgendaResponseDTO guardarAgenda(AgendaRequestDTO dto) {
 
-        boolean ocupado = agendaRepository.existsByBarberoIdAndFechaAndHora(
+        boolean ocupado = agendaRepository.existsByBarberoIdAndFechaAndHoraAndEstadoNot(
                 dto.getBarberoId(),
                 dto.getFecha(),
-                dto.getHora()
+                dto.getHora(),
+                "CANCELADA"
         );
 
         if (ocupado) {
@@ -104,10 +105,12 @@ public class AgendaService {
         Agenda agenda = agendaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Agenda no encontrada"));
 
-        boolean ocupado = agendaRepository.existsByBarberoIdAndFechaAndHora(
+        boolean ocupado = agendaRepository.existsByBarberoIdAndFechaAndHoraAndEstadoNotAndIdNot(
                 dto.getBarberoId(),
                 dto.getFecha(),
-                dto.getHora()
+                dto.getHora(),
+                "CANCELADA",
+                id
         );
 
         if (ocupado) {
@@ -126,6 +129,10 @@ public class AgendaService {
     }
 
     public void eliminarAgenda(Long id) {
+        if (!agendaRepository.existsById(id)) {
+            throw new RuntimeException("Agenda no encontrada");
+        }
+
         agendaRepository.deleteById(id);
     }
 
