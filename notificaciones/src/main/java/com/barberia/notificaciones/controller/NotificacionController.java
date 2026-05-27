@@ -3,6 +3,7 @@ package com.barberia.notificaciones.controller;
 import com.barberia.notificaciones.dto.NotificacionRequestDTO;
 import com.barberia.notificaciones.dto.NotificacionResponseDTO;
 import com.barberia.notificaciones.service.NotificacionService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class NotificacionController {
     }
 
     @PostMapping
-    public NotificacionResponseDTO crearNotificacion(@RequestBody NotificacionRequestDTO dto) {
+    public NotificacionResponseDTO crearNotificacion(@Valid @RequestBody NotificacionRequestDTO dto) {
         return notificacionService.crearNotificacion(dto);
     }
 
