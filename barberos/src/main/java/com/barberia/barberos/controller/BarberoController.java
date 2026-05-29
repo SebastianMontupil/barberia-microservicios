@@ -2,11 +2,13 @@ package com.barberia.barberos.controller;
 
 import com.barberia.barberos.dto.BarberoRequestDTO;
 import com.barberia.barberos.dto.BarberoResponseDTO;
+import com.barberia.barberos.dto.BarberoDisponibilidadRequestDTO;
 import com.barberia.barberos.service.BarberoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,50 +22,57 @@ public class BarberoController {
     }
 
     @GetMapping
-    public List<BarberoResponseDTO> listarBarberos() {
-        return barberoService.listarBarberos();
+    public ResponseEntity<List<BarberoResponseDTO>> listarBarberos() {
+        return ResponseEntity.ok(barberoService.listarBarberos());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BarberoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return barberoService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(barberoService.buscarPorId(id));
     }
 
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<BarberoResponseDTO> buscarPorUsuarioId(@PathVariable Long usuarioId) {
-        return barberoService.buscarPorUsuarioId(usuarioId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(barberoService.buscarPorUsuarioId(usuarioId));
     }
 
     @GetMapping("/disponible/{disponible}")
-    public List<BarberoResponseDTO> buscarPorDisponible(@PathVariable Boolean disponible) {
-        return barberoService.buscarPorDisponible(disponible);
+    public ResponseEntity<List<BarberoResponseDTO>> buscarPorDisponible(@PathVariable Boolean disponible) {
+        return ResponseEntity.ok(barberoService.buscarPorDisponible(disponible));
     }
 
     @GetMapping("/especialidad/{especialidad}")
-    public List<BarberoResponseDTO> buscarPorEspecialidad(@PathVariable String especialidad) {
-        return barberoService.buscarPorEspecialidad(especialidad);
+    public ResponseEntity<List<BarberoResponseDTO>> buscarPorEspecialidad(@PathVariable String especialidad) {
+        return ResponseEntity.ok(barberoService.buscarPorEspecialidad(especialidad));
     }
 
     @PostMapping
-    public BarberoResponseDTO guardarBarbero(@Valid @RequestBody BarberoRequestDTO dto) {
-        return barberoService.guardarBarbero(dto);
+    public ResponseEntity<BarberoResponseDTO> guardarBarbero(@Valid @RequestBody BarberoRequestDTO dto) {
+        BarberoResponseDTO barberoCreado = barberoService.guardarBarbero(dto);
+        URI location = URI.create("/api/barberos/" + barberoCreado.getId());
+
+        return ResponseEntity.created(location).body(barberoCreado);
     }
 
     @PutMapping("/{id}")
-    public BarberoResponseDTO modificarBarbero(
+    public ResponseEntity<BarberoResponseDTO> modificarBarbero(
             @PathVariable Long id,
             @Valid @RequestBody BarberoRequestDTO dto
     ) {
-        return barberoService.modificarBarbero(id, dto);
+        return ResponseEntity.ok(barberoService.modificarBarbero(id, dto));
+    }
+
+    @PutMapping("/{id}/disponibilidad")
+    public ResponseEntity<BarberoResponseDTO> actualizarDisponibilidad(
+            @PathVariable Long id,
+            @Valid @RequestBody BarberoDisponibilidadRequestDTO dto
+    ) {
+        return ResponseEntity.ok(barberoService.actualizarDisponibilidad(id, dto.getDisponible()));
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarBarbero(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarBarbero(@PathVariable Long id) {
         barberoService.eliminarBarbero(id);
-        return "Barbero eliminado correctamente";
+        return ResponseEntity.noContent().build();
     }
 }

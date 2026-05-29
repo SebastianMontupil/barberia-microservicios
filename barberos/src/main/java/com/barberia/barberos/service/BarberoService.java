@@ -2,126 +2,26 @@ package com.barberia.barberos.service;
 
 import com.barberia.barberos.dto.BarberoRequestDTO;
 import com.barberia.barberos.dto.BarberoResponseDTO;
-import com.barberia.barberos.dto.UsuarioDTO;
-import com.barberia.barberos.model.Barbero;
-import com.barberia.barberos.repository.BarberoRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Service
-public class BarberoService {
+public interface BarberoService {
 
-    private final BarberoRepository barberoRepository;
-    private final RestTemplate restTemplate;
+    List<BarberoResponseDTO> listarBarberos();
 
-    public BarberoService(BarberoRepository barberoRepository, RestTemplate restTemplate) {
-        this.barberoRepository = barberoRepository;
-        this.restTemplate = restTemplate;
-    }
+    BarberoResponseDTO buscarPorId(Long id);
 
-    public List<BarberoResponseDTO> listarBarberos() {
-        return barberoRepository.findAll()
-                .stream()
-                .map(this::convertirAResponseDTO)
-                .collect(Collectors.toList());
-    }
+    BarberoResponseDTO buscarPorUsuarioId(Long usuarioId);
 
-    public Optional<BarberoResponseDTO> buscarPorId(Long id) {
-        return barberoRepository.findById(id)
-                .map(this::convertirAResponseDTO);
-    }
+    List<BarberoResponseDTO> buscarPorDisponible(Boolean disponible);
 
-    public Optional<BarberoResponseDTO> buscarPorUsuarioId(Long usuarioId) {
-        return barberoRepository.findByUsuarioId(usuarioId)
-                .map(this::convertirAResponseDTO);
-    }
+    List<BarberoResponseDTO> buscarPorEspecialidad(String especialidad);
 
-    public List<BarberoResponseDTO> buscarPorDisponible(Boolean disponible) {
-        return barberoRepository.findByDisponible(disponible)
-                .stream()
-                .map(this::convertirAResponseDTO)
-                .collect(Collectors.toList());
-    }
+    BarberoResponseDTO guardarBarbero(BarberoRequestDTO dto);
 
-    public List<BarberoResponseDTO> buscarPorEspecialidad(String especialidad) {
-        return barberoRepository.findByEspecialidad(especialidad)
-                .stream()
-                .map(this::convertirAResponseDTO)
-                .collect(Collectors.toList());
-    }
+    BarberoResponseDTO modificarBarbero(Long id, BarberoRequestDTO dto);
 
-    public BarberoResponseDTO guardarBarbero(BarberoRequestDTO dto) {
+    BarberoResponseDTO actualizarDisponibilidad(Long id, Boolean disponible);
 
-        Barbero barbero = new Barbero();
-
-        barbero.setUsuarioId(dto.getUsuarioId());
-        barbero.setEspecialidad(dto.getEspecialidad());
-        barbero.setHorario(dto.getHorario());
-        barbero.setAniosExperiencia(dto.getAniosExperiencia());
-        barbero.setDisponible(dto.getDisponible());
-
-        Barbero barberoGuardado = barberoRepository.save(barbero);
-
-        return convertirAResponseDTO(barberoGuardado);
-    }
-
-    public BarberoResponseDTO modificarBarbero(Long id, BarberoRequestDTO dto) {
-
-        Barbero barbero = barberoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Barbero no encontrado"));
-        
-        barbero.setUsuarioId(dto.getUsuarioId());
-        barbero.setEspecialidad(dto.getEspecialidad());
-        barbero.setHorario(dto.getHorario());
-        barbero.setAniosExperiencia(dto.getAniosExperiencia());
-        barbero.setDisponible(dto.getDisponible());
-
-        Barbero barberoActualizado = barberoRepository.save(barbero);
-
-        return convertirAResponseDTO(barberoActualizado);
-    }
-
-    public void eliminarBarbero(Long id) {
-        if (!barberoRepository.existsById(id)) {
-            throw new RuntimeException("Barbero no encontrado");
-        }
-
-        barberoRepository.deleteById(id);
-    }
-
-    private BarberoResponseDTO convertirAResponseDTO(Barbero barbero) {
-
-        BarberoResponseDTO dto = new BarberoResponseDTO();
-
-        dto.setId(barbero.getId());
-        dto.setUsuarioId(barbero.getUsuarioId());
-
-        try {
-            UsuarioDTO usuario = restTemplate.getForObject(
-                    "http://localhost:8081/api/usuarios/" + barbero.getUsuarioId(),
-                    UsuarioDTO.class
-            );
-
-            if (usuario != null) {
-                dto.setNombre(usuario.getNombre());
-                dto.setEmail(usuario.getEmail());
-                dto.setTelefono(usuario.getTelefono());
-            }
-        } catch (Exception e) {
-            dto.setNombre("Usuario no encontrado");
-            dto.setEmail("Sin informacion");
-            dto.setTelefono("Sin informacion");
-        }
-
-        dto.setEspecialidad(barbero.getEspecialidad());
-        dto.setHorario(barbero.getHorario());
-        dto.setAniosExperiencia(barbero.getAniosExperiencia());
-        dto.setDisponible(barbero.getDisponible());
-
-        return dto;
-    }
+    void eliminarBarbero(Long id);
 }
