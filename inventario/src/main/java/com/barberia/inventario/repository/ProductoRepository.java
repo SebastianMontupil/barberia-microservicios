@@ -7,9 +7,5 @@ import java.util.List;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
-    List<Producto> findByCategoria(String categoria);
-
-    List<Producto> findByDisponible(Boolean disponible);
-
-    List<Producto> findByNombreContaining(String nombre);
+    List<Producto> findByNombreContainingIgnoreCase(String nombre);
 }
