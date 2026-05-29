@@ -1,31 +1,29 @@
 package com.barberia.pagos.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class PagoResponseDTO {
 
     private Long id;
 
-    private Long clienteId;
-    private String nombreCliente;
-    private String emailCliente;
-    private String telefonoCliente;
-
     private Long agendaId;
-    private LocalDate fechaAgenda;
-    private LocalTime horaAgenda;
-    private String estadoAgenda;
 
-    private String nombreBarbero;
+    private Long clienteId;
 
-    private Integer monto;
-    private String metodoPago;
+    private Double monto;
+
+    private LocalDateTime fechaPago;
+
     private String estadoPago;
-    private LocalDate fechaPago;
+
+    private String metodoPago;
 }
