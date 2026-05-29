@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface ServicioRepository extends JpaRepository<Servicio, Long> {
 
-    List<Servicio> findByDisponible(Boolean disponible);
-
-    List<Servicio> findByNombreContaining(String nombre);
+    List<Servicio> findByNombreContainingIgnoreCase(String nombre);
 }

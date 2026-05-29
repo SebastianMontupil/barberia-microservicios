@@ -1,35 +1,37 @@
 package com.barberia.servicios.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "servicios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Servicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre del servicio es obligatorio")
+    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @NotBlank(message = "La descripción es obligatoria")
+    @Column(nullable = false, length = 255)
     private String descripcion;
 
-    @NotNull(message = "El precio es obligatorio")
-    @Min(value = 0, message = "El precio no puede ser negativo")
-    private Integer precio;
+    @Column(nullable = false)
+    private Double precio;
 
-    @NotNull(message = "La duración es obligatoria")
-    @Min(value = 1, message = "La duración debe ser mayor a 0")
-    private Integer duracionMinutos;
-
-    @NotNull(message = "La disponibilidad es obligatoria")
-    private Boolean disponible;
+    @Column(nullable = false)
+    private Integer duracion;
 }
