@@ -1,7 +1,10 @@
 package com.barberia.reportes.controller;
 
 import com.barberia.reportes.dto.ReporteDTO;
+import com.barberia.reportes.dto.ReporteRequestDTO;
 import com.barberia.reportes.service.ReporteService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,28 +17,34 @@ public class ReporteController {
         this.reporteService = reporteService;
     }
 
+    @PostMapping("/consolidado")
+    public ResponseEntity<ReporteDTO> generarReporteConsolidado(
+            @Valid @RequestBody ReporteRequestDTO reporteRequestDTO) {
+        return ResponseEntity.ok(reporteService.generarReporteConsolidado(reporteRequestDTO));
+    }
+
     @GetMapping("/ingresos")
-    public ReporteDTO reporteIngresos() {
-        return reporteService.reporteIngresos();
+    public ResponseEntity<ReporteDTO> reporteIngresos() {
+        return ResponseEntity.ok(reporteService.reporteIngresos());
     }
 
     @GetMapping("/citas")
-    public ReporteDTO reporteCitas() {
-        return reporteService.reporteCitas();
+    public ResponseEntity<ReporteDTO> reporteCitas() {
+        return ResponseEntity.ok(reporteService.reporteCitas());
     }
 
     @GetMapping("/citas/barbero/{barberoId}")
-    public ReporteDTO reporteCitasPorBarbero(@PathVariable Long barberoId) {
-        return reporteService.reporteCitasPorBarbero(barberoId);
+    public ResponseEntity<ReporteDTO> reporteCitasPorBarbero(@PathVariable Long barberoId) {
+        return ResponseEntity.ok(reporteService.reporteCitasPorBarbero(barberoId));
     }
 
     @GetMapping("/calificacion/barbero/{barberoId}")
-    public ReporteDTO reporteCalificacionBarbero(@PathVariable Long barberoId) {
-        return reporteService.reporteCalificacionBarbero(barberoId);
+    public ResponseEntity<ReporteDTO> reporteCalificacionBarbero(@PathVariable Long barberoId) {
+        return ResponseEntity.ok(reporteService.reporteCalificacionBarbero(barberoId));
     }
 
     @GetMapping("/desempeno/barbero/{barberoId}")
-    public ReporteDTO reporteDesempenoBarbero(@PathVariable Long barberoId) {
-        return reporteService.reporteDesempenoBarbero(barberoId);
+    public ResponseEntity<ReporteDTO> reporteDesempenoBarbero(@PathVariable Long barberoId) {
+        return ResponseEntity.ok(reporteService.reporteDesempenoBarbero(barberoId));
     }
 }
