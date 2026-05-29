@@ -5,8 +5,17 @@ import com.barberia.agendas.dto.AgendaResponseDTO;
 import com.barberia.agendas.service.AgendaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,53 +29,70 @@ public class AgendaController {
     }
 
     @GetMapping
-    public List<AgendaResponseDTO> listarAgendas() {
-        return agendaService.listarAgendas();
+    public ResponseEntity<List<AgendaResponseDTO>> listarAgendas() {
+        return ResponseEntity.ok(agendaService.listarAgendas());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AgendaResponseDTO> buscarPorId(@PathVariable Long id) {
-        return agendaService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(agendaService.buscarPorId(id));
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public List<AgendaResponseDTO> buscarPorClienteId(@PathVariable Long clienteId) {
-        return agendaService.buscarPorClienteId(clienteId);
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorClienteId(@PathVariable Long clienteId) {
+        return ResponseEntity.ok(agendaService.buscarPorClienteId(clienteId));
     }
 
     @GetMapping("/barbero/{barberoId}")
-    public List<AgendaResponseDTO> buscarPorBarberoId(@PathVariable Long barberoId) {
-        return agendaService.buscarPorBarberoId(barberoId);
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorBarberoId(@PathVariable Long barberoId) {
+        return ResponseEntity.ok(agendaService.buscarPorBarberoId(barberoId));
+    }
+
+    @GetMapping("/servicio/{servicioId}")
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorServicioId(@PathVariable Long servicioId) {
+        return ResponseEntity.ok(agendaService.buscarPorServicioId(servicioId));
     }
 
     @GetMapping("/estado/{estado}")
-    public List<AgendaResponseDTO> buscarPorEstado(@PathVariable String estado) {
-        return agendaService.buscarPorEstado(estado);
+    public ResponseEntity<List<AgendaResponseDTO>> buscarPorEstado(@PathVariable String estado) {
+        return ResponseEntity.ok(agendaService.buscarPorEstado(estado));
     }
 
     @PostMapping
-    public AgendaResponseDTO guardarAgenda(@Valid @RequestBody AgendaRequestDTO dto) {
-        return agendaService.guardarAgenda(dto);
+    public ResponseEntity<AgendaResponseDTO> guardarAgenda(@Valid @RequestBody AgendaRequestDTO dto) {
+        AgendaResponseDTO agendaCreada = agendaService.guardarAgenda(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(agendaCreada.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(agendaCreada);
     }
 
-    @PutMapping("/cancelar/{id}")
-    public AgendaResponseDTO cancelarAgenda(@PathVariable Long id) {
-        return agendaService.cancelarAgenda(id);
-    }
-
-    @PutMapping("/reprogramar/{id}")
-    public AgendaResponseDTO reprogramarAgenda(
+    @PutMapping("/{id}")
+    public ResponseEntity<AgendaResponseDTO> actualizarAgenda(
             @PathVariable Long id,
             @Valid @RequestBody AgendaRequestDTO dto
     ) {
-        return agendaService.reprogramarAgenda(id, dto);
+        return ResponseEntity.ok(agendaService.actualizarAgenda(id, dto));
+    }
+
+    @PutMapping("/cancelar/{id}")
+    public ResponseEntity<AgendaResponseDTO> cancelarAgenda(@PathVariable Long id) {
+        return ResponseEntity.ok(agendaService.cancelarAgenda(id));
+    }
+
+    @PutMapping("/reprogramar/{id}")
+    public ResponseEntity<AgendaResponseDTO> reprogramarAgenda(
+            @PathVariable Long id,
+            @Valid @RequestBody AgendaRequestDTO dto
+    ) {
+        return ResponseEntity.ok(agendaService.reprogramarAgenda(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarAgenda(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarAgenda(@PathVariable Long id) {
         agendaService.eliminarAgenda(id);
-        return "Agenda eliminada correctamente";
+        return ResponseEntity.noContent().build();
     }
 }

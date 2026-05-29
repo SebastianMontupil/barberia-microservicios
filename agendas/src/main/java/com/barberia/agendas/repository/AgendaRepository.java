@@ -3,7 +3,7 @@ package com.barberia.agendas.repository;
 import com.barberia.agendas.model.Agenda;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AgendaRepository extends JpaRepository<Agenda, Long> {
@@ -12,21 +12,21 @@ public interface AgendaRepository extends JpaRepository<Agenda, Long> {
 
     List<Agenda> findByBarberoId(Long barberoId);
 
-    List<Agenda> findByFecha(LocalDate fecha);
+    List<Agenda> findByServicioId(Long servicioId);
+
+    List<Agenda> findByFechaHora(LocalDateTime fechaHora);
 
     List<Agenda> findByEstado(String estado);
 
-    boolean existsByBarberoIdAndFechaAndHoraAndEstadoNot(
+    boolean existsByBarberoIdAndFechaHoraAndEstadoNot(
             Long barberoId,
-            LocalDate fecha,
-            java.time.LocalTime hora,
+            LocalDateTime fechaHora,
             String estado
     );
 
-    boolean existsByBarberoIdAndFechaAndHoraAndEstadoNotAndIdNot(
+    boolean existsByBarberoIdAndFechaHoraAndEstadoNotAndIdNot(
             Long barberoId,
-            LocalDate fecha,
-            java.time.LocalTime hora,
+            LocalDateTime fechaHora,
             String estado,
             Long id
     );
