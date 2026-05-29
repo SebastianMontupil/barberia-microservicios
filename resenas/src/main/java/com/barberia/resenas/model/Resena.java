@@ -1,54 +1,69 @@
 package com.barberia.resenas.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "resenas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Resena {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cliente_id")
+    @Column(name = "cliente_id", nullable = false)
     private Long clienteId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @Column(name = "barbero_id", nullable = false)
+    private Long barberoId;
+
+    @Column(nullable = false)
+    private Integer calificacion;
+
+    @Column(length = 500)
+    private String comentario;
+
+    @Column(nullable = false)
+    private LocalDateTime fecha;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "cliente_id",
             referencedColumnName = "id",
             insertable = false,
-            updatable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+            updatable = false
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private UsuarioReferencia cliente;
 
-    @Column(name = "barbero_id")
-    private Long barberoId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "barbero_id",
             referencedColumnName = "id",
             insertable = false,
-            updatable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+            updatable = false
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private BarberoReferencia barbero;
-
-    private Integer calificacion;
-    // 1 a 5
-
-    private String comentario;
-
-    private LocalDate fechaResena;
 }

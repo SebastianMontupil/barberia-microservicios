@@ -5,8 +5,16 @@ import com.barberia.resenas.dto.ResenaResponseDTO;
 import com.barberia.resenas.service.ResenaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,48 +28,49 @@ public class ResenaController {
     }
 
     @GetMapping
-    public List<ResenaResponseDTO> listarResenas() {
-        return resenaService.listarResenas();
+    public ResponseEntity<List<ResenaResponseDTO>> listarResenas() {
+        return ResponseEntity.ok(resenaService.listarResenas());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResenaResponseDTO> buscarPorId(@PathVariable Long id) {
-        return resenaService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(resenaService.buscarPorId(id));
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public List<ResenaResponseDTO> buscarPorClienteId(@PathVariable Long clienteId) {
-        return resenaService.buscarPorClienteId(clienteId);
+    public ResponseEntity<List<ResenaResponseDTO>> buscarPorClienteId(@PathVariable Long clienteId) {
+        return ResponseEntity.ok(resenaService.buscarPorClienteId(clienteId));
     }
 
     @GetMapping("/barbero/{barberoId}")
-    public List<ResenaResponseDTO> buscarPorBarberoId(@PathVariable Long barberoId) {
-        return resenaService.buscarPorBarberoId(barberoId);
+    public ResponseEntity<List<ResenaResponseDTO>> buscarPorBarberoId(@PathVariable Long barberoId) {
+        return ResponseEntity.ok(resenaService.buscarPorBarberoId(barberoId));
     }
 
     @GetMapping("/calificacion/{calificacion}")
-    public List<ResenaResponseDTO> buscarPorCalificacion(@PathVariable Integer calificacion) {
-        return resenaService.buscarPorCalificacion(calificacion);
+    public ResponseEntity<List<ResenaResponseDTO>> buscarPorCalificacion(@PathVariable Integer calificacion) {
+        return ResponseEntity.ok(resenaService.buscarPorCalificacion(calificacion));
     }
 
     @PostMapping
-    public ResenaResponseDTO guardarResena(@Valid @RequestBody ResenaRequestDTO dto) {
-        return resenaService.guardarResena(dto);
+    public ResponseEntity<ResenaResponseDTO> guardarResena(@Valid @RequestBody ResenaRequestDTO dto) {
+        ResenaResponseDTO resenaCreada = resenaService.guardarResena(dto);
+        URI location = URI.create("/api/resenas/" + resenaCreada.getId());
+
+        return ResponseEntity.created(location).body(resenaCreada);
     }
 
     @PutMapping("/{id}")
-    public ResenaResponseDTO modificarResena(
+    public ResponseEntity<ResenaResponseDTO> modificarResena(
             @PathVariable Long id,
             @Valid @RequestBody ResenaRequestDTO dto
     ) {
-        return resenaService.modificarResena(id, dto);
+        return ResponseEntity.ok(resenaService.modificarResena(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarResena(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarResena(@PathVariable Long id) {
         resenaService.eliminarResena(id);
-        return "Reseña eliminada correctamente";
+        return ResponseEntity.noContent().build();
     }
 }
