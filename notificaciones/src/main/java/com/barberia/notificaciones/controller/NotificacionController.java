@@ -4,8 +4,16 @@ import com.barberia.notificaciones.dto.NotificacionRequestDTO;
 import com.barberia.notificaciones.dto.NotificacionResponseDTO;
 import com.barberia.notificaciones.service.NotificacionService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,55 +28,47 @@ public class NotificacionController {
     }
 
     @GetMapping
-    public List<NotificacionResponseDTO> listarNotificaciones() {
-        return notificacionService.listarNotificaciones();
+    public ResponseEntity<List<NotificacionResponseDTO>> listarNotificaciones() {
+        return ResponseEntity.ok(notificacionService.listarNotificaciones());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<NotificacionResponseDTO> buscarPorId(@PathVariable Long id) {
-        return notificacionService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(notificacionService.buscarPorId(id));
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public List<NotificacionResponseDTO> buscarPorUsuarioId(@PathVariable Long usuarioId) {
-        return notificacionService.buscarPorUsuarioId(usuarioId);
+    public ResponseEntity<List<NotificacionResponseDTO>> buscarPorUsuarioId(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(notificacionService.buscarPorUsuarioId(usuarioId));
     }
 
     @GetMapping("/agenda/{agendaId}")
-    public List<NotificacionResponseDTO> buscarPorAgendaId(@PathVariable Long agendaId) {
-        return notificacionService.buscarPorAgendaId(agendaId);
+    public ResponseEntity<List<NotificacionResponseDTO>> buscarPorAgendaId(@PathVariable Long agendaId) {
+        return ResponseEntity.ok(notificacionService.buscarPorAgendaId(agendaId));
     }
 
     @GetMapping("/tipo/{tipo}")
-    public List<NotificacionResponseDTO> buscarPorTipo(@PathVariable String tipo) {
-        return notificacionService.buscarPorTipo(tipo);
-    }
-
-    @GetMapping("/estado/{estado}")
-    public List<NotificacionResponseDTO> buscarPorEstado(@PathVariable String estado) {
-        return notificacionService.buscarPorEstado(estado);
+    public ResponseEntity<List<NotificacionResponseDTO>> buscarPorTipo(@PathVariable String tipo) {
+        return ResponseEntity.ok(notificacionService.buscarPorTipo(tipo));
     }
 
     @PostMapping
-    public NotificacionResponseDTO crearNotificacion(@Valid @RequestBody NotificacionRequestDTO dto) {
-        return notificacionService.crearNotificacion(dto);
+    public ResponseEntity<NotificacionResponseDTO> crearNotificacion(
+            @Valid @RequestBody NotificacionRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(notificacionService.crearNotificacion(dto));
     }
 
-    @PutMapping("/enviada/{id}")
-    public NotificacionResponseDTO marcarComoEnviada(@PathVariable Long id) {
-        return notificacionService.marcarComoEnviada(id);
-    }
-
-    @PutMapping("/error/{id}")
-    public NotificacionResponseDTO marcarComoError(@PathVariable Long id) {
-        return notificacionService.marcarComoError(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<NotificacionResponseDTO> actualizarNotificacion(
+            @PathVariable Long id,
+            @Valid @RequestBody NotificacionRequestDTO dto) {
+        return ResponseEntity.ok(notificacionService.actualizarNotificacion(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarNotificacion(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarNotificacion(@PathVariable Long id) {
         notificacionService.eliminarNotificacion(id);
-        return "Notificación eliminada correctamente";
+        return ResponseEntity.noContent().build();
     }
 }

@@ -5,18 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NotificacionResponseDTO {
+public class CampoInvalidoDTO {
 
-    private Long id;
-    private Long usuarioId;
-    private Long agendaId;
+    private String campo;
     private String mensaje;
-    private LocalDateTime fechaEnvio;
-    private String tipo;
+    private String valorRechazado;
 }

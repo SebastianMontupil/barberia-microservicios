@@ -6,17 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NotificacionResponseDTO {
+public class ValidacionErrorDTO {
 
-    private Long id;
-    private Long usuarioId;
-    private Long agendaId;
+    private LocalDateTime fecha;
+    private Integer estado;
+    private String error;
     private String mensaje;
-    private LocalDateTime fechaEnvio;
-    private String tipo;
+    private List<CampoInvalidoDTO> camposInvalidos;
 }

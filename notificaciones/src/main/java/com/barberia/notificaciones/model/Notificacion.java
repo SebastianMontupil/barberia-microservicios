@@ -1,7 +1,21 @@
 package com.barberia.notificaciones.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -9,13 +23,14 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Notificacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id")
+    @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -30,7 +45,7 @@ public class Notificacion {
     @EqualsAndHashCode.Exclude
     private UsuarioReferencia usuario;
 
-    @Column(name = "agenda_id")
+    @Column(name = "agenda_id", nullable = false)
     private Long agendaId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -45,13 +60,12 @@ public class Notificacion {
     @EqualsAndHashCode.Exclude
     private AgendaReferencia agenda;
 
-    private String tipo;
-    // CORREO, SMS, WHATSAPP
-
+    @Column(nullable = false, length = 500)
     private String mensaje;
 
-    private String estado;
-    // PENDIENTE, ENVIADA, ERROR
-
+    @Column(nullable = false)
     private LocalDateTime fechaEnvio;
+
+    @Column(nullable = false, length = 50)
+    private String tipo;
 }

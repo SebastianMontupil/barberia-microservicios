@@ -12,6 +12,4 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
     List<Notificacion> findByAgendaId(Long agendaId);
 
     List<Notificacion> findByTipo(String tipo);
-
-    List<Notificacion> findByEstado(String estado);
 }
