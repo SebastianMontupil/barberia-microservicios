@@ -411,8 +411,6 @@ Durante la defensa, es recomendable explicar:
 
 La idea central del proyecto es que cada servicio pueda evolucionar de forma independiente, pero que todos trabajen juntos mediante endpoints REST.
 
-## Evaluación Parcial 3: infraestructura
-
 ### Puertos y componentes
 
 | Componente | Puerto | Función |
