@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    default: local
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: auth
+              uri: lb://auth
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - 'RewritePath=/api/auth/?(?<segment>.*), /api/$\{segment}'
+            - id: barberos
+              uri: lb://barberos
+              predicates:
+                - Path=/api/barberos/**
+            - id: agendas
+              uri: lb://agendas
+              predicates:
+                - Path=/api/agendas/**
+            - id: servicios
+              uri: lb://servicios
+              predicates:
+                - Path=/api/servicios/**
+            - id: pagos
+              uri: lb://pagos
+              predicates:
+                - Path=/api/pagos/**
+            - id: notificaciones
+              uri: lb://notificaciones
+              predicates:
+                - Path=/api/notificaciones/**
+            - id: resenas
+              uri: lb://resenas
+              predicates:
+                - Path=/api/resenas/**
+            - id: inventario-raiz
+              uri: lb://inventario
+              predicates:
+                - Path=/api/inventario
+              filters:
+                - SetPath=/api/productos
+            - id: inventario
+              uri: lb://inventario
+              predicates:
+                - Path=/api/inventario/**
+              filters:
+                - 'RewritePath=/api/inventario/?(?<segment>.*), /api/productos/$\{segment}'
+            - id: reportes
+              uri: lb://reportes
+              predicates:
+                - Path=/api/reportes/**
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: "${EUREKA_URL:http://localhost:8761/eureka/}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

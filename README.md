@@ -410,3 +410,79 @@ Durante la defensa, es recomendable explicar:
 - Como se prueba el sistema usando la coleccion Postman.
 
 La idea central del proyecto es que cada servicio pueda evolucionar de forma independiente, pero que todos trabajen juntos mediante endpoints REST.
+
+## Evaluación Parcial 3: infraestructura
+
+### Puertos y componentes
+
+| Componente | Puerto | Función |
+| --- | ---: | --- |
+| Eureka Server | 8761 | Registro y descubrimiento de servicios. |
+| API Gateway | 8080 | Punto de entrada único. |
+| auth, barberos, agendas, servicios | 8081–8084 | Gestión de usuarios, barberos, reservas y catálogo. |
+| pagos, notificaciones, resenas | 8085–8087 | Procesos asociados a una reserva. |
+| inventario, reportes | 8088–8089 | Stock e indicadores. |
+
+Cada módulo ahora usa `application.yml` y las variables `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD` y `EUREKA_URL`. Consulta `.env.example`; no subas un archivo `.env` real.
+
+Configuración local probada:
+
+```text
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=
+EUREKA_URL=http://localhost:8761/eureka/
+```
+
+### Orden de ejecución
+
+1. Inicia MySQL.
+2. Inicia `eureka-server` y abre http://localhost:8761.
+3. Inicia los nueve microservicios y espera que aparezcan como `UP` en Eureka.
+4. Inicia `api-gateway` en http://localhost:8080.
+
+Desde el IDE ejecuta la clase `*Application` de cada módulo. Desde consola:
+
+```bat
+cd api-gateway
+mvn spring-boot:run
+```
+
+`levantar-microservicios.bat` inicia los componentes en este orden. Si existe Maven Wrapper lo usa; de lo contrario usa `mvn` instalado en el sistema.
+
+### Rutas públicas del Gateway
+
+| Ruta del Gateway | Destino interno |
+| --- | --- |
+| `/api/auth/usuarios` | `auth` → `/api/usuarios` |
+| `/api/barberos/**` | `barberos` → misma ruta |
+| `/api/agendas/**` | `agendas` → misma ruta |
+| `/api/servicios/**` | `servicios` → misma ruta |
+| `/api/pagos/**` | `pagos` → misma ruta |
+| `/api/notificaciones/**` | `notificaciones` → misma ruta |
+| `/api/resenas/**` | `resenas` → misma ruta |
+| `/api/inventario/**` | `inventario` → `/api/productos/**` |
+| `/api/reportes/**` | `reportes` → misma ruta |
+
+El Gateway usa `lb://nombre-servicio`, por lo que obtiene las instancias desde Eureka. Solo `auth` e `inventario` usan `RewritePath`, porque sus rutas internas tienen otro nombre.
+
+### URLs, pruebas y solución de errores
+
+- Eureka: http://localhost:8761
+- Gateway health: http://localhost:8080/actuator/health
+- Swagger: `http://localhost:PUERTO/swagger-ui/index.html`
+
+Para cada módulo:
+
+```bat
+mvn test
+mvn clean package
+```
+
+- **Access denied de MySQL:** revisa `DB_USERNAME` y `DB_PASSWORD`; la instalación validada usa contraseña vacía para `root`.
+- **Eureka no disponible:** inicia `eureka-server` primero y verifica `EUREKA_URL`.
+- **Gateway 503:** espera que la instancia se registre como `UP` en Eureka.
+- **Puerto ocupado:** detén el proceso que usa el puerto o ajusta `server.port`.
+
+Para la defensa, muestra Eureka con los servicios registrados, Swagger de un microservicio, una solicitud directa al Gateway y el resultado de `mvn test`.
