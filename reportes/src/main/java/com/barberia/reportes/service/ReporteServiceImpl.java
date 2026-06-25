@@ -19,9 +19,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class ReporteServiceImpl implements ReporteService {
 
-    private static final String PAGOS_URL = "http://localhost:8085/api/pagos";
-    private static final String AGENDAS_URL = "http://localhost:8083/api/agendas";
-    private static final String RESENAS_URL = "http://localhost:8087/api/resenas";
+    private static final String PAGOS_URL = "http://pagos/api/pagos";
+    private static final String AGENDAS_URL = "http://agendas/api/agendas";
+    private static final String RESENAS_URL = "http://resenas/api/resenas";
 
     private final RestTemplate restTemplate;
 
